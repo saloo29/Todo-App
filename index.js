@@ -7,7 +7,6 @@ import { v4 as uuid4 } from 'uuid';
 import usersRoutes from "./backend/routes/auth.js";
 import { connectDB } from "./backend/db/conn.mjs";
 
-dotenv.config();
 
 const app = express();
 app.use(express.json()); 
