@@ -5,6 +5,7 @@ import express, { json } from "express";
 import cors from "cors";
 import { v4 as uuid4 } from 'uuid';
 import usersRoutes from "./backend/routes/auth.js";
+import taskRoutes from "./backend/routes/todos.js"
 import { connectDB } from "./backend/db/conn.mjs";
 
 
@@ -13,9 +14,9 @@ app.use(express.json());
 app.use(cors());
 
 
-app.use("/todo/users", usersRoutes);
+app.use("/api/users", usersRoutes);
+app.use("/api/tasks", taskRoutes);
 
-let todos = [];
 let requestCount = 0;
 
 function todosAuthMiddleware(req, res, next) {

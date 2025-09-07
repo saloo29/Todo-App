@@ -4,7 +4,7 @@ dotenv.config();
 import * as z from "zod";
 import bcrypt from "bcrypt";
 import { Router } from "express";
-import User from "../data/store.js"
+import { User} from "../data/store.js"
 import jwt from "jsonwebtoken";
 
 const secret = process.env.JWT_SECRET;
@@ -16,8 +16,8 @@ usersRoutes.post("/signup", async (req, res) => {
   
   const requireBody = z.object({
     email : z.string().email("Invalid email address, please add correct email address"),
-    password: z.string().min(8).max(16),
-    username: z.string().min(8).max(14),
+    password: z.string().min(6).max(16),
+    username: z.string().min(6).max(14),
   }) 
 
   const parsedUserDetails = requireBody.safeParse(req.body);
@@ -38,7 +38,7 @@ usersRoutes.post("/signup", async (req, res) => {
     })
     res.status(200).json({ message: "Successfully signed up" })
   } catch(e) {
-    res.status(400).json({
+    return res.status(401).json({
       message: "Signup failed",
       error: e.message
     })
@@ -66,9 +66,21 @@ usersRoutes.post("/signin", async (req, res) => {
       token: token
     })
   } else {
-    res.status(400).json({
+    res.status(401).json({
       message: "Incorrect credentials"
     })
+  }
+})
+
+usersRoutes.get("/me", async (req, res) => {
+  
+  try {
+    const currentUser = await User.findOne(req.body._id);
+    return res.status(200).json(currentUser._id);
+  } catch(e) {
+    return res.status(401).json({
+      message: "User does not exits"
+    });
   }
 })
 
